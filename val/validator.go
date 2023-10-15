@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	isValidUsername  = regexp.MustCompile(`^[a-z0-9_]+$`).MatchString
-	isValidUFullName = regexp.MustCompile(`^[a-zA-Z\\s]+$`).MatchString
+	isValidUsername = regexp.MustCompile(`^[a-z0-9_]+$`).MatchString
+	isValidFullName = regexp.MustCompile(`^[a-zA-Z\\s]+$`).MatchString
 )
 
 func ValidateString(value string, minLength int, maxLength int) error {
@@ -52,8 +52,8 @@ func ValidateFullName(value string) error {
 		return err
 	}
 
-	if !isValidUFullName(value) {
-		return fmt.Errorf("must container only letters or spaces")
+	if !isValidFullName(value) {
+		return fmt.Errorf("must contain only letters or spaces")
 	}
 
 	return nil
