@@ -1,0 +1,30 @@
+1. INSTALL
+
+wget https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/protobuf/3.21.12-7ubuntu1/protobuf_3.21.12.orig.tar.gz
+
+2. UNZIP
+
+tar -xzf protobuf_3.21.12.orig.tar.gz
+
+cd protobuf-3.21.12
+
+3. INSTALL REQUIRED PACKAGES
+
+sudo apt-get update
+sudo apt-get install autoconf automake libtool curl make g++ unzip
+
+
+4. Autogen ve Configure:
+
+./autogen.sh
+./configure
+
+5. Derleme ve Kurulum:
+
+make
+sudo make install
+sudo ldconfig  # Bu komut, sistem kütüphanesinin yolunu güncellemek için gereklidir.
+
+
+protoc --version
+
