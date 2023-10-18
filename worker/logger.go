@@ -1,12 +1,17 @@
 package worker
 
 import (
+	"context"
 	"fmt"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
 type Logger struct {
+}
+
+func (logger *Logger) Printf(ctx context.Context, format string, v ...interface{}) {
+	log.WithLevel(zerolog.DebugLevel).Msgf(format, v...)
 }
 
 func NewLogger() *Logger {
