@@ -7,6 +7,7 @@ import (
 	db "github.com/emrecoskun705/TraniningGo/db/sqlc"
 	_ "github.com/emrecoskun705/TraniningGo/docs/statik"
 	"github.com/emrecoskun705/TraniningGo/gapi"
+	"github.com/emrecoskun705/TraniningGo/mail"
 	"github.com/emrecoskun705/TraniningGo/pb"
 	"github.com/emrecoskun705/TraniningGo/util"
 	"github.com/emrecoskun705/TraniningGo/worker"
@@ -51,7 +52,7 @@ func main() {
 	}
 
 	taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
-	go runTaskProcessor(redisOpt, store)
+	go runTaskProcessor(config, redisOpt, store)
 	go runGatewayServer(config, store, taskDistributor)
 	runGrpcServer(config, store, taskDistributor)
 }
@@ -116,8 +117,9 @@ func runGatewayServer(config util.Config, store db.Store, taskDistributor worker
 	}
 }
 
-func runTaskProcessor(redisOpt asynq.RedisClientOpt, store db.Store) {
-	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store)
+func runTaskProcessor(config util.Config, redisOpt asynq.RedisClientOpt, store db.Store) {
+	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
+	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store, mailer)
 	log.Info().Msg("start task processor")
 	err := taskProcessor.Start()
 	if err != nil {
