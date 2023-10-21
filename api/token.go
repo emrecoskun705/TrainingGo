@@ -1,8 +1,9 @@
 package api
 
 import (
-	"database/sql"
+	"errors"
 	"fmt"
+	db "github.com/emrecoskun705/TraniningGo/db/sqlc"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
@@ -35,7 +36,7 @@ func (server *Server) renewAccessToken(ctx *gin.Context) {
 
 	session, err := server.store.GetSession(ctx, parsedUUID)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, db.ErrRecordNotFound) {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
 			return
 		}

@@ -8,8 +8,6 @@ import (
 )
 
 func TestStore_TransferTx(t *testing.T) {
-	store := NewStore(testDb)
-
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
 	fmt.Println(">> before", account1.Balance, account2.Balance)
@@ -22,7 +20,7 @@ func TestStore_TransferTx(t *testing.T) {
 
 	for i := 0; i < n; i++ {
 		go func() {
-			result, err := store.TransferTx(context.Background(), TransferTxParams{
+			result, err := testStore.TransferTx(context.Background(), TransferTxParams{
 				FromAccountId: account1.ID,
 				ToAccountId:   account2.ID,
 				Amount:        amount,
@@ -91,10 +89,10 @@ func TestStore_TransferTx(t *testing.T) {
 	}
 
 	// check the final updated balance
-	updatedAccount1, err := testQueries.GetAccount(context.Background(), account1.ID)
+	updatedAccount1, err := testStore.GetAccount(context.Background(), account1.ID)
 	require.NoError(t, err)
 
-	updatedAccount2, err := testQueries.GetAccount(context.Background(), account2.ID)
+	updatedAccount2, err := testStore.GetAccount(context.Background(), account2.ID)
 	require.NoError(t, err)
 
 	fmt.Println(">> after:", updatedAccount1.Balance, updatedAccount2.Balance)
@@ -104,8 +102,6 @@ func TestStore_TransferTx(t *testing.T) {
 }
 
 func TestStore_TransferTxDeadlock(t *testing.T) {
-	store := NewStore(testDb)
-
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
 	fmt.Println(">> before", account1.Balance, account2.Balance)
@@ -125,7 +121,7 @@ func TestStore_TransferTxDeadlock(t *testing.T) {
 		}
 
 		go func() {
-			_, err := store.TransferTx(context.Background(), TransferTxParams{
+			_, err := testStore.TransferTx(context.Background(), TransferTxParams{
 				FromAccountId: fromAccountId,
 				ToAccountId:   toAccountId,
 				Amount:        amount,
@@ -140,10 +136,10 @@ func TestStore_TransferTxDeadlock(t *testing.T) {
 	}
 
 	// check the final updated balance
-	updatedAccount1, err := testQueries.GetAccount(context.Background(), account1.ID)
+	updatedAccount1, err := testStore.GetAccount(context.Background(), account1.ID)
 	require.NoError(t, err)
 
-	updatedAccount2, err := testQueries.GetAccount(context.Background(), account2.ID)
+	updatedAccount2, err := testStore.GetAccount(context.Background(), account2.ID)
 	require.NoError(t, err)
 
 	fmt.Println(">> after:", updatedAccount1.Balance, updatedAccount2.Balance)
